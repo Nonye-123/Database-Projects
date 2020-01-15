@@ -1,0 +1,35 @@
+Assignment Week 2
+
+Question 1
+
+SELECT * FROM SalesLT.Customer;
+
+
+Question 2
+
+SELECT FirstName, MiddleName, LastName, EmailAddress, Phone
+FROM SalesLT.Customer;
+
+
+
+Question 3
+
+SELECT Name AS ProductName, ProductNumber, Color, ISNULL(Size,'0') AS ProductSize, ISNULL(Weight, '0') AS ProductWeight, 
+CONVERT(nvarchar (30), SellStartDate) AS ConvertedSellStartDate,
+CONVERT (decimal (6,2), ListPrice - StandardCost) AS Profit
+FROM SalesLT.Product;
+
+Question 4
+
+SELECT Name AS ProductName, ProductNumber, Color, ISNULL(Size, '0') AS ProductSize, ISNULL(Weight, '0') AS ProductWeight, 
+CONVERT(nvarchar (30), SellStartDate) AS ConvertedSellStartDate, 
+ISNULL(CONVERT(nvarchar(30), SellEndDate), 'On Sale') AS ConvertedSellEndDate,
+CONVERT (decimal (8,2), ListPrice - StandardCost) AS Profit
+FROM SalesLT.Product;
+
+Question 5
+
+SELECT ProductID, SalesOrderID, CONVERT(decimal(8,2), UnitPrice) AS SalesUnitPrice, UnitPriceDiscount,
+CONVERT(decimal(10,2), LineTotal) AS LineTotalAmount
+FROM SalesLT.SalesOrderDetail;
+
