@@ -1,0 +1,109 @@
+Assignment 2 - Filtering with Predicates
+
+SELECT Name, ProductNumber, Color, size
+FROM SalesLT.Product
+WHERE ProductCategoryID = 25;
+
+SELECT Name, Size, ListPrice, ProductModelID
+FROM SalesLT.Product
+WHERE Color = 'Multi';
+
+SELECT ProductNumber, Color, Size, ListPrice
+FROM SalesLT.Product
+WHERE ProductModelID = 33;
+
+SELECT Name, Color, ProductCategoryID
+FROM SalesLT.Product
+WHERE ListPrice > 49;
+
+SELECT Name, ProductNumber, size, Weight
+FROM SalesLT.Product
+WHERE StandardCost > 50;
+
+SELECT ProductModelID, Size, Color
+FROM SalesLT.Product
+WHERE StandardCost > 1000;
+
+SELECT Name, Size, weight, StandardCost
+FROM SalesLT.Product
+WHERE ListPrice < 700;
+
+SELECT Name, ProductNumber, Color, Size, ListPrice
+FROM SalesLT.Product
+WHERE StandardCost <= 1300;
+
+SELECT Name, ProductCategoryID, ProductModelID
+FROM SalesLT.Product
+WHERE ListPrice <> 49.99;
+
+SELECT ProductNumber, Name, Size
+FROM SalesLT.Product
+WHERE Color IN ('Black', 'Red', 'Blue');
+
+SELECT Name, Color, ListPrice
+FROM SalesLT.Product
+WHERE Size IN ('s', 'M', 'L');
+
+SELECT Name, ProductNumber, Size, Weight
+FROM SalesLT.Product
+WHERE ProductCategoryID IN (18, 25, 11);
+
+SELECT Name, Color, Size, ProductCategoryID
+FROM SalesLT.Product
+WHERE SellEndDate BETWEEN '2003-01-01' AND '2004-12-31';
+
+SELECT ProductNumber, ListPrice
+FROM SalesLT.Product
+WHERE ProductModelID BETWEEN 11 AND 18;
+
+SELECT Name, StandardCost, Size
+FROM SalesLT.Product
+WHERE ListPrice BETWEEN 1000 AND 3000;
+
+SELECT Name, ProductNumber, ListPrice
+FROM SalesLT.Product
+WHERE ProductNumber LIKE 'SO%';
+
+SELECT Name, ProductNumber, Color, Size
+FROM SalesLT.Product
+WHERE Name LIKE '%a%';
+
+SELECT ProductNumber, Color, StandardCost, ListPrice
+FROM SalesLT.Product
+WHERE Color LIKE '%e';
+
+SELECT Name, ProductNumber, Color, ProductModelID
+FROM SalesLT.Product
+WHERE COlor = 'Black' AND ProductModelID IN (5, 6, 9);
+
+SELECT ProductCategoryID, Name, ListPrice, SellEndDate
+FROM SalesLT.Product
+WHERE ProductCategoryID IN (16, 18) AND SellEndDate IS NULL;
+
+SELECT Name, Color, Size, StandardCost
+FROM SalesLT.Product
+WHERE Name LIKE 'Ha%' AND Size IN ('S', 'M');
+
+SELECT ProductNumber, ListPrice, SellEndDate
+FROM SalesLT.Product
+WHERE ListPrice < 35.00 OR SellEndDate IS NULL;
+
+SELECT ProductCategoryID, Name, StandardCost
+FROM SalesLT.Product
+WHERE ProductCategoryID = 18 OR StandardCost > 1500.00;
+
+SELECT ProductNumber, Color, Size, ProductCategoryID
+FROM SalesLT.Product
+WHERE ProductNumber LIKE '%M' OR ProductCategoryID IN (11, 18, 33);
+
+SELECT Name, ProductNumber, SellEndDate
+FROM SalesLT.Product
+WHERE SellEndDate IS NOT NULL;
+
+SELECT ProductModelID, Color, Size, ListPrice
+FROM SalesLT.Product
+WHERE Color NOT IN ('Red', 'Black', 'White');
+
+SELECT Name, ProductModelID, StandardCost
+FROM SalesLT.Product
+WHERE ProductModelID NOT IN (25, 33);
