@@ -1,0 +1,122 @@
+AMAZING GRACE PROJECT 3
+
+We created our tables and included the values without queries.
+Please see below for primary key and foreign key queries.
+
+ALTER TABLE dbo.[Sales.Product]
+ADD ProductCategoryID int;
+
+ALTER TABLE dbo.[Sales.Product]
+ALTER COLUMN ProductNumber nvarchar(30) NOT NULL;
+
+ALTER TABLE dbo.[Sales.Product]
+ADD PRIMARY KEY (ProductNumber);
+
+ALTER TABLE dbo.[Sales.ProductCategory]
+ADD PRIMARY KEY (ProductCategoryID);
+
+ALTER TABLE dbo.[Sales.Employee]
+ADD PRIMARY KEY (EmployeeID);
+
+ALTER TABLE dbo.[Sales.Customer]
+ADD PRIMARY KEY (CustomerID);
+
+ALTER TABLE dbo.[Sales.Product]
+ADD FOREIGN KEY (ProductCategoryID)
+REFERENCES dbo.[Sales.ProductCategory] (ProductCategoryID);
+
+ALTER TABLE dbo.[Sales.Customer]
+ADD FOREIGN KEY (ProductNumber)
+REFERENCES dbo.[Sales.Product] (ProductNumber);
+
+ALTER TABLE dbo.[Sales.Customer]
+ADD FOREIGN KEY (SalesPersonEmployeeID)
+REFERENCES dbo.[Sales.Employee] (EmployeeID);
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 5
+WHERE ProductName = 'Shrugs';
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 3
+WHERE ProductName = 'Neck Scarf';
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 4
+WHERE ProductName = 'Beanie';
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 10
+WHERE ProductName = 'Dinner Gown';
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 9
+WHERE ProductName = 'Polo Shirt';
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 3
+WHERE ProductName = 'Sweater';
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 5
+WHERE ProductName = 'Shorts';
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 8
+WHERE ProductName = 'Pants';
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 1
+WHERE ProductName = 'Hoodie';
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 7
+WHERE ProductName = 'Suit';
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 6
+WHERE ProductName = 'Swim Trunk';
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 7
+WHERE ProductName = 'Vest';
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 3
+WHERE ProductName = 'Winter Jacket';
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 12
+WHERE ProductName = 'Socks';
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 1
+WHERE ProductName = 'Joggers';
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 3
+WHERE ProductName = 'Gloves';
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 11
+WHERE ProductName = 'Hand Towel';
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 3
+WHERE ProductName = 'Sweat Shirt';
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 5
+WHERE ProductName = 'Tank Top';
+
+UPDATE dbo.[Sales.Product]
+SET ProductCategoryID = 2
+WHERE ProductName = 'Panty Hose';
+
+ALTER TABLE dbo.[Sales.Customer]
+ADD FOREIGN KEY (ProductNumber)
+REFERENCES dbo.[Sales.Product] (ProductNumber);
+
+ALTER TABLE dbo.[Sales.Customer]
+ADD FOREIGN KEY (SalesPersonEmployeeID)
+REFERENCES dbo.[Sales.Employee] (EmployeeID);

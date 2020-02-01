@@ -1,0 +1,95 @@
+ASSIGNMENT 3
+
+INNER JOIN
+
+SELECT p.ProductName, c.Name AS CetegoryName
+FROM dbo.[Sales.Product] AS p
+INNER JOIN dbo.[Sales.ProductCategory] AS c
+ON p.ProductCategoryID = c.ProductCategoryID;
+
+SELECT c.FirstName, c.LastName, p.ProductName
+FROM dbo.[Sales.Customer] AS c
+INNER JOIN dbo.[Sales.Product] AS p
+ON c.ProductNumber = p.ProductNumber
+ORDER BY c.ProductNumber;
+
+SELECT c.FirstName, c.LastName, p.ProductName, e.EmployeeName
+FROM dbo.[Sales.Customer] AS c
+INNER JOIN dbo.[Sales.Product] AS p
+ON c.ProductNumber = p.ProductNumber
+INNER JOIN dbo.[Sales.Employee] AS e
+ON c.SalesPersonEmployeeID = e.EmployeeID
+ORDER BY p.ProductNumber;
+
+LEFT OUTER JOIN
+
+SELECT c.FirstName, c.LastName, p.ProductNumber
+FROM dbo.[Sales.Customer] AS c
+LEFT OUTER JOIN dbo.[Sales.Product] AS p
+ON c.ProductNumber = p.ProductNumber
+ORDER BY p.ProductNumber DESC;
+
+SELECT c.FirstName, c.LastName, p.ProductName, cat.Name AS CategoryName 
+FROM dbo.[Sales.Customer] AS c
+LEFT OUTER JOIN dbo.[Sales.Product] AS p
+ON c.ProductNumber = p.ProductNumber
+LEFT OUTER JOIN dbo.[Sales.ProductCategory] AS cat
+ON p.ProductCategoryID = cat.ProductCategoryID
+ORDER BY p.ProductNumber DESC;
+
+SELECT c.FirstName, c.LastName, p.ProductNumber
+FROM dbo.[Sales.Customer] AS c
+LEFT OUTER JOIN dbo.[Sales.Product] AS p
+ON c.ProductNumber = p.ProductNumber
+WHERE p.ProductNumber IS NULL;
+
+RIGHT OUTER JOIN
+
+SELECT p.ProductName, p.ListPrice, c.Name AS CetegoryName
+FROM dbo.[Sales.Product] AS p
+RIGHT OUTER JOIN dbo.[Sales.ProductCategory] AS c
+ON p.ProductCategoryID = c.ProductCategoryID
+ORDER BY p.ProductCategoryID;
+
+SELECT c.FirstName, c.LastName, c.ProductNumber, e.EmployeeName
+FROM dbo.[Sales.Customer] AS c
+RIGHT OUTER JOIN dbo.[Sales.Employee] AS e
+ON c.SalesPersonEmployeeID = e.EmployeeID
+ORDER BY ProductNumber DESC;
+
+SELECT c.FirstName, c.LastName, p.ProductName
+FROM dbo.[Sales.Customer] AS c
+RIGHT OUTER JOIN dbo.[Sales.Product] AS p
+ON c.ProductNumber = p.ProductNumber
+ORDER BY c.ProductNumber;
+
+FULL JOIN
+
+SELECT p.ProductName, c.Name AS CetegoryName
+FROM dbo.[Sales.Product] AS p
+FULL JOIN dbo.[Sales.ProductCategory] AS c
+ON p.ProductCategoryID = c.ProductCategoryID
+ORDER BY p.ProductCategoryID;
+
+SELECT c.FirstName, c.LastName, e.EmployeeName
+FROM dbo.[Sales.Customer] AS c
+FULL JOIN dbo.[Sales.Employee] AS e
+ON c.SalesPersonEmployeeID = e.EmployeeID
+WHERE c.FirstName IS NULL
+ORDER BY c.CustomerID;
+
+SELECT c.CustomerID, p.ProductNumber, cat.Name AS CategoryName
+FROM dbo.[Sales.Customer] AS c
+FULL JOIN dbo.[Sales.Product] AS p
+ON c.ProductNumber = p.ProductNumber
+FULL JOIN dbo.[Sales.ProductCategory] AS cat
+ON p.ProductCategoryID = cat.ProductCategoryID
+ORDER BY p.ProductNumber DESC;
+
+SELF JOIN
+
+SELECT e.EmployeeName, m.EmployeeName AS ManagerName
+FROM dbo.[Sales.Employee] AS e
+LEFT JOIN dbo.[Sales.Employee] AS m
+ON e.ManagerID = m.EmployeeID
+ORDER BY e.ManagerID;
