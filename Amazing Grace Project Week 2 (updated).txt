@@ -1,0 +1,66 @@
+Amazing Grace Project Week 2
+
+CREATE DATABASE AmazingGraceDB;
+
+CREATE TABLE Sales.Product (ProductName nvarchar(30), ProductNumber nvarchar(30), Color nvarchar(30), 
+Size nvarchar(30), StandardCost money, ListPrice money);
+
+INSERT INTO dbo.[Sales.Product]
+VALUES ('Shrugs', '01-123', 'Black', 'S', '10.00', '19.00');
+
+INSERT INTO dbo.[Sales.Product]
+VALUES ('Neck Scarf', '01-124', 'Brown', 'L', '7.00', '12.00');
+
+INSERT INTO dbo.[Sales.Product]
+VALUES ('Beanie', '01-125', 'Blue', 'M', '2.99', '5.99');
+
+INSERT INTO dbo.[Sales.Product]
+VALUES ('Dinner Gown', '01-126', 'Yellow', 'XL', '15.00', '27.00');
+
+INSERT INTO dbo.[Sales.Product]
+VALUES ('Polo Shirt', '01-127', 'Green', 'L', '12.72', '18.99');
+
+INSERT INTO dbo.[Sales.Product]
+VALUES ('Sweater', '01-128', 'Purple', 'M', '9.00', '14.99');
+
+INSERT INTO dbo.[Sales.Product]
+VALUES ('Shorts', '01-129', 'Brown', 'S', '14.52', '20.00');
+
+INSERT INTO dbo.[Sales.Product]
+VALUES ('Pants', '01-130', 'Gray', 'L', '18.00', '25.00');
+
+INSERT INTO dbo.[Sales.Product]
+VALUES ('Hoodie', '01-131', 'Indigo', 'S', '15.00', '22.00');
+
+INSERT INTO dbo.[Sales.Product]
+VALUES ('Suit', '01-132', 'Black', 'XL', '55.00', '80.99');
+
+INSERT INTO dbo.[Sales.Product]
+VALUES ('Swim Trunk', '01-133', 'Pink', 'M', '8.00', '15.49');
+
+INSERT INTO dbo.[Sales.Product]
+VALUES ('Vest', '01-134', 'White', 'L', '7.43', '12.99');
+
+INSERT INTO dbo.[Sales.Product]
+VALUES ('Winter Jacket', '01-135', 'Gray', 'M', '40.00', '60.00');
+
+INSERT INTO dbo.[Sales.Product]
+VALUES ('Socks', '01-136', 'White', 'L', '5.00', '9.99');
+
+INSERT INTO dbo.[Sales.Product]
+VALUES ('Joggers', '01-137', 'Brown', 'S', '20.00', '30.00');
+
+SELECT * FROM dbo.[Sales.Product];
+
+SELECT * FROM dbo.[Sales.Product]
+WHERE StandardCost > 10;
+
+SELECT ProductName, Color + ', ' + Size AS ProductDetails
+FROM dbo.[Sales.Product];
+
+SELECT ProductName, ProductNumber, Color, Size,
+ListPrice - StandardCost AS Profit
+FROM dbo.[Sales.Product];
+
+SELECT ProductName + ': ' + ProductNumber AS ProductName, Color, Size, ListPrice
+FROM dbo.[Sales.Product];
