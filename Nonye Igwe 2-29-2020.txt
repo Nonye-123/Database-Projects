@@ -1,0 +1,94 @@
+Week 6 Assignment
+
+Scalar Subqueries
+
+/*Display the customer who placed the last order*/
+SELECT CustomerID, SalesOrderID, OrderDate
+FROM SalesLT.SalesOrderHeader
+WHERE SalesOrderID =
+(SELECT MAX(SalesOrderID) FROM SalesLT.SalesOrderDetail)
+
+/*List of products whose standard cost is higher than the average unit price of products sold*/
+SELECT Name, ProductID, StandardCost
+FROM SalesLT.Product
+WHERE StandardCost >
+(SELECT AVG(UnitPrice) FROM SalesLT.SalesOrderDetail)
+
+/*List of customers who placed orders on the last day of sales*/
+SELECT CustomerID, SalesOrderID, OrderDate
+FROM SalesLT.SalesOrderHeader 
+WHERE Orderdate =
+(SELECT MAX(Orderdate) FROM SalesLT.SalesOrderHeader)
+
+Multi-Valued Subqueries
+
+/*List of customers who have order quantity greater than 15*/
+SELECT CustomerID, SalesOrderID
+FROM SalesLT.SalesOrderHeader
+WHERE SalesOrderID IN
+(SELECT SalesOrderID FROM SalesLT.SalesOrderDetail
+WHERE OrderQty > 15)
+
+/*List of products shipped by cargo transport*/
+SELECT ProductID, UnitPrice
+FROM SalesLT.SalesOrderDetail
+WHERE SalesOrderID IN
+(SELECT SalesOrderID FROM SalesLT.SalesOrderHeader
+WHERE ShipMethod LIKE 'CARGO%')
+
+/*List of products that have order quantity less than or equal to 3*/
+SELECT Name, ProductID, ListPrice
+FROM SalesLT.Product
+WHERE ProductID IN
+(SELECT ProductID FROM SalesLT.SalesOrderDetail
+WHERE OrderQty <= 3)
+
+Self-Contained Subqueries
+
+/*List of products whose standard cost is higher than the average unit price of products sold*/
+SELECT Name, ProductID, StandardCost
+FROM SalesLT.Product
+WHERE StandardCost >
+(SELECT AVG(UnitPrice) FROM SalesLT.SalesOrderDetail)
+
+/*List of customers who placed orders on the last day of sales*/
+SELECT CustomerID, SalesOrderID, OrderDate
+FROM SalesLT.SalesOrderHeader 
+WHERE Orderdate =
+(SELECT MAX(Orderdate) FROM SalesLT.SalesOrderHeader)
+
+/*List of customers who have order quantity greater than 15*/
+SELECT CustomerID, SalesOrderID
+FROM SalesLT.SalesOrderHeader
+WHERE SalesOrderID IN
+(SELECT SalesOrderID FROM SalesLT.SalesOrderDetail
+WHERE OrderQty > 15)
+
+Correlated Subqueries
+
+/*For each product, list their highest order quantity*/
+SELECT ProductID, SalesOrderID, OrderQty
+FROM SalesLT.SalesOrderDetail AS SO1
+WHERE OrderQty =
+(SELECT MAX(OrderQty)
+FROM SalesLT.SalesOrderDetail AS SO2
+WHERE SO2.ProductID = SO1.ProductID)
+ORDER BY OrderQty DESC;
+
+/*For each product, list their highest LineTotal*/
+SELECT ProductID, SalesOrderID, LineTotal
+FROM SalesLT.SalesOrderDetail AS SO1
+WHERE LineTotal=
+(SELECT MAX(LineTotal)
+FROM SalesLT.SalesOrderDetail AS SO2
+WHERE SO2.ProductID = SO1.ProductID)
+ORDER BY LineTotal DESC;
+
+/*For each Customer, list their average freight amount paid*/
+SELECT CustomerID, Freight
+FROM SalesLT.SalesOrderHeader AS SO1
+WHERE Freight=
+(SELECT AVG(Freight)
+FROM SalesLT.SalesOrderHeader AS SO2
+WHERE SO2.CustomerID = SO1.CustomerID)
+ORDER BY Freight DESC;
