@@ -1,0 +1,280 @@
+Assignment - Week 7
+
+Grouping Sets
+
+SELECT m.EmployeeName AS ManagerName, e.EmployeeName, COUNT(c.CustomerID) AS Customers
+FROM SalesLT.Employee AS m
+LEFT JOIN SalesLT.Employee AS e
+ON m.EmployeeID = e.ManagerID
+LEFT JOIN SalesLT.Customer AS c
+ON e.EmployeeName = c.SalesPerson
+GROUP BY GROUPING SETS(m.EmployeeName, e.EmployeeName, ())
+ORDER BY m.EmployeeName, e.EmployeeName DESC;
+
+SELECT m.EmployeeName AS ManagerName, e.EmployeeName, SUM(sod.LineTotal) AS TotalRevenue
+FROM SalesLT.Employee AS m
+LEFT JOIN SalesLT.Employee AS e
+ON m.EmployeeID = e.ManagerID
+LEFT JOIN SalesLT.Customer AS c
+ON e.EmployeeName = c.SalesPerson
+LEFT JOIN SalesLT.SalesOrderHeader AS soh
+ON c.CustomerID = soh.CustomerID
+LEFT JOIN SalesLT.SalesOrderDetail AS sod
+ON soh.SalesOrderID = sod.SalesOrderID
+GROUP BY GROUPING SETS(m.EmployeeName, e.EmployeeName, ())
+ORDER BY m.EmployeeName, e.EmployeeName DESC;
+
+
+SELECT e.EmployeeName, soh.CustomerID, SUM(sod.LineTotal) AS TotalAmount
+FROM SalesLT.Employee AS e
+LEFT JOIN SalesLT.Customer AS c
+ON e.EmployeeName = c.SalesPerson
+LEFT JOIN SalesLT.SalesOrderHeader AS soh
+ON c.CustomerID = soh.CustomerID
+LEFT JOIN SalesLT.SalesOrderDetail AS sod
+ON soh.SalesOrderID = sod.SalesOrderID
+GROUP BY GROUPING SETS(e.EmployeeName, soh.CustomerID, ())
+ORDER BY e.EmployeeName, soh.CustomerID;
+
+Rollup
+
+SELECT a.CountryRegion, a.StateProvince, a.City, COUNT(ca.CustomerID) As Customers
+FROM SalesLT.CustomerAddress AS ca
+LEFT JOIN SalesLT.Address AS a
+ON ca.AddressID = a.AddressID
+GROUP BY ROLLUP (a.CountryRegion, a.StateProvince, a.City)
+ORDER BY a.CountryRegion, a.StateProvince, a.City;
+
+SELECT m.EmployeeName AS ManagerName, e.EmployeeName, COUNT(c.CustomerID) AS Customers
+FROM SalesLT.Employee AS m
+LEFT JOIN SalesLT.Employee AS e
+ON m.EmployeeID = e.ManagerID
+LEFT JOIN SalesLT.Customer AS c
+ON e.EmployeeName = c.SalesPerson
+GROUP BY ROLLUP (m.EmployeeName, e.EmployeeName)
+ORDER BY m.EmployeeName, e.EmployeeName;
+
+SELECT m.EmployeeName AS ManagerName, e.EmployeeName, SUM(sod.LineTotal) AS TotalRevenue
+FROM SalesLT.Employee AS m
+LEFT JOIN SalesLT.Employee AS e
+ON m.EmployeeID = e.ManagerID
+LEFT JOIN SalesLT.Customer AS c
+ON e.EmployeeName = c.SalesPerson
+LEFT JOIN SalesLT.SalesOrderHeader AS soh
+ON c.CustomerID = soh.CustomerID
+LEFT JOIN SalesLT.SalesOrderDetail AS sod
+ON soh.SalesOrderID = sod.SalesOrderID
+GROUP BY ROLLUP (m.EmployeeName, e.EmployeeName)
+ORDER BY m.EmployeeName, e.EmployeeName;
+
+Cube
+
+SELECT m.EmployeeName AS ManagerName, e.EmployeeName, COUNT(c.CustomerID) AS Customers
+FROM SalesLT.Employee AS m
+LEFT JOIN SalesLT.Employee AS e
+ON m.EmployeeID = e.ManagerID
+LEFT JOIN SalesLT.Customer AS c
+ON e.EmployeeName = c.SalesPerson
+GROUP BY CUBE (m.EmployeeName, e.EmployeeName)
+ORDER BY m.EmployeeName, e.EmployeeName;
+
+SELECT m.EmployeeName AS ManagerName, e.EmployeeName, SUM(sod.LineTotal) AS TotalRevenue
+FROM SalesLT.Employee AS m
+LEFT JOIN SalesLT.Employee AS e
+ON m.EmployeeID = e.ManagerID
+LEFT JOIN SalesLT.Customer AS c
+ON e.EmployeeName = c.SalesPerson
+LEFT JOIN SalesLT.SalesOrderHeader AS soh
+ON c.CustomerID = soh.CustomerID
+LEFT JOIN SalesLT.SalesOrderDetail AS sod
+ON soh.SalesOrderID = sod.SalesOrderID
+GROUP BY CUBE (m.EmployeeName, e.EmployeeName)
+ORDER BY m.EmployeeName, e.EmployeeName;
+
+
+SELECT e.EmployeeName, soh.CustomerID, SUM(sod.LineTotal) AS TotalAmount
+FROM SalesLT.Employee AS e
+LEFT JOIN SalesLT.Customer AS c
+ON e.EmployeeName = c.SalesPerson
+LEFT JOIN SalesLT.SalesOrderHeader AS soh
+ON c.CustomerID = soh.CustomerID
+LEFT JOIN SalesLT.SalesOrderDetail AS sod
+ON soh.SalesOrderID = sod.SalesOrderID
+GROUP BY CUBE (e.EmployeeName, soh.CustomerID)
+ORDER BY e.EmployeeName, soh.CustomerID;
+
+Pivoting Data
+
+SELECT SalesOrderID, Brakes, Components, Chains, Pedals
+FROM
+(SELECT sod.SalesOrderID, cat.Name AS Category, sod.LineTotal 
+FROM SalesLT.SalesOrderDetail AS sod
+JOIN SalesLT.Product AS p
+ON sod.ProductID = p.ProductID
+JOIN SalesLT.ProductCategory AS cat
+ON p.ProductCategoryID = cat.ProductCategoryID) AS Sales
+PIVOT(SUM(LineTotal) FOR Category IN([Brakes], [Components], [Chains], [Pedals])) AS pvt
+ORDER BY SalesOrderID;
+
+Unpivoting Data
+
+CREATE TABLE #CategoryRevenuePivot
+(SalesOrderID int, Brakes money, Components money, Chains money, Pedals money);
+
+INSERT INTO #CategoryRevenuePivot
+SELECT * FROM
+(SELECT sod.SalesOrderID, cat.Name AS Category, sod.LineTotal 
+FROM SalesLT.SalesOrderDetail AS sod
+JOIN SalesLT.Product AS p
+ON sod.ProductID = p.ProductID
+JOIN SalesLT.ProductCategory AS cat
+ON p.ProductCategoryID = cat.ProductCategoryID) AS Sales
+PIVOT(SUM(LineTotal) FOR Category IN([Brakes], [Components], [Chains], [Pedals])) AS pvt
+ORDER BY SalesOrderID;
+
+SELECT SalesOrderID, Category, Revenue
+FROM
+(SELECT SalesOrderID,[Brakes], [Components], [Chains], [Pedals]
+FROM #CategoryRevenuePivot) crp
+UNPIVOT
+(Revenue FOR Category IN ([Brakes], [Components], [Chains], [Pedals])) AS Revenue
+
+
+Create Table with Identity, Default and NOT NULL columns
+
+CREATE TABLE SalesLT.BillingContact
+(
+	BillingContactID int IDENTITY PRIMARY KEY NOT NULL,
+	FirstName nvarchar(50) NOT NULL,
+	LastName nvarchar(50) NOT NULL,
+	PhoneNumber nvarchar(25) NOT NULL,
+	Email nvarchar(100) NULL,
+	PaymentMethod nvarchar(50) NOT NULL DEFAULT 'Credit card',
+	CustomerID int NOT NULL REFERENCES SalesLT.Customer(CustomerID)
+);
+GO
+
+
+INSERT INTO SalesLT.BillingContact
+VALUES
+('Ava', 'Brown', '212-525-1137', 'abrown@gmail.com', DEFAULT, 1),
+('Emily', 'Cole', '212-505-1236', 'emily.cole@beverly.com', DEFAULT, 2),
+('Brandon', 'Kennedy', '202-527-4344', NULL, 'Check', 3),
+('Nicole', 'Miles', '240-514-2243', 'nmiles@comcast.net', 'ACH', 4),
+('Amy', 'Kennedy', '240-536-4003', 'akennedy@gmail.com', DEFAULT, 5),
+('Donald', 'King', '212-433-1222', 'donald1@goldenrule.com', 'Check', 6),
+('James', 'Eze', '817-423-1043', 'jeze@gmail.com', DEFAULT, 7),
+('Ivy', 'Emerald', '502-117-0446', NULL, DEFAULT, 10),
+('Kola', 'Adeyemi', '301-211-0238', NULL, 'ACH', 11),
+('Michael', 'Adams', '513-766-2113', 'madams@panama.com', 'Check', 12),
+('Tiffany', 'White', '817-725-3044', 'tiffany56@yahoo.com', DEFAULT, 16),
+('John', 'Peterson', '301-705-3042', 'jpeterson@gmail.com', DEFAULT, 18),
+('David', 'Jones', '502-724-1233', 'david.jones@pivot.com', 'Check', 19),
+('Ocean', 'Blue', '240-345-3564', 'oblue@gmail.com', 'Check', 20),
+('Rodney', 'Rivas', '240-323-3555', 'rrivas@amerius.com', 'ACH', 21),
+('Paula', 'Jones', '202-321-4453', 'paula.jones@yahoo.com', DEFAULT, 22),
+('James', 'Evans', '513-772-5336', 'jevans@gmail.com', DEFAULT, 23),
+('Grace', 'Blake', '603-212-8857', 'gblake@gmail.com', 'Check', 24),
+('Faith', 'Charles', '817-276-5699', 'fcharles@hotmail.com', DEFAULT, 25),
+('Charity', 'Fox', '301-233-4338', NULL, DEFAULT, 28);
+
+
+Create exact copy of BillingContact table
+
+CREATE TABLE SalesLT.BillingContactCopy
+(
+	BillingContactID int IDENTITY PRIMARY KEY NOT NULL,
+	FirstName nvarchar(50) NOT NULL,
+	LastName nvarchar(50) NOT NULL,
+	PhoneNumber nvarchar(25) NOT NULL,
+	Email nvarchar(100) NULL,
+	PaymentMethod nvarchar(50) NOT NULL DEFAULT 'Credit card',
+	CustomerID int NOT NULL REFERENCES SalesLT.Customer(CustomerID)
+);
+GO
+
+INSERT INTO SalesLT.BillingContactCopy
+VALUES
+('Ava', 'Brown', '212-525-1137', 'abrown@gmail.com', DEFAULT, 1),
+('Emily', 'Cole', '212-505-1236', 'emily.cole@beverly.com', DEFAULT, 2),
+('Brandon', 'Kennedy', '202-527-4344', NULL, 'Check', 3),
+('Nicole', 'Miles', '240-514-2243', 'nmiles@comcast.net', 'ACH', 4),
+('Amy', 'Kennedy', '240-536-4003', 'akennedy@gmail.com', DEFAULT, 5),
+('Donald', 'King', '212-433-1222', 'donald1@goldenrule.com', 'Check', 6),
+('James', 'Eze', '817-423-1043', 'jeze@gmail.com', DEFAULT, 7),
+('Ivy', 'Emerald', '502-117-0446', NULL, DEFAULT, 10),
+('Kola', 'Adeyemi', '301-211-0238', NULL, 'ACH', 11),
+('Michael', 'Adams', '513-766-2113', 'madams@panama.com', 'Check', 12),
+('Tiffany', 'White', '817-725-3044', 'tiffany56@yahoo.com', DEFAULT, 16),
+('John', 'Peterson', '301-705-3042', 'jpeterson@gmail.com', DEFAULT, 18),
+('David', 'Jones', '502-724-1233', 'david.jones@pivot.com', 'Check', 19),
+('Ocean', 'Blue', '240-345-3564', 'oblue@gmail.com', 'Check', 20),
+('Rodney', 'Rivas', '240-323-3555', 'rrivas@amerius.com', 'ACH', 21),
+('Paula', 'Jones', '202-321-4453', 'paula.jones@yahoo.com', DEFAULT, 22),
+('James', 'Evans', '513-772-5336', 'jevans@gmail.com', DEFAULT, 23),
+('Grace', 'Blake', '603-212-8857', 'gblake@gmail.com', 'Check', 24),
+('Faith', 'Charles', '817-276-5699', 'fcharles@hotmail.com', DEFAULT, 25),
+('Charity', 'Fox', '301-233-4338', NULL, DEFAULT, 28);
+
+
+Update 5 rows 
+
+UPDATE SalesLT.BillingContactCopy
+SET Email = 'kola.adeyemi@comcast.net'
+WHERE FirstName = 'Kola';
+
+UPDATE SalesLT.BillingContactCopy
+SET PhoneNumber = '301-443-9595'
+WHERE FirstName = 'Donald';
+
+UPDATE SalesLT.BillingContactCopy
+SET PaymentMethod = DEFAULT
+WHERE FirstName = 'Michael';
+
+UPDATE SalesLT.BillingContactCopy
+SET PaymentMethod = 'Check'
+WHERE FirstName = 'Ava';
+
+UPDATE SalesLT.BillingContactCopy
+SET Email = 'nmiles@gmail.com'
+WHERE FirstName = 'Nicole';
+
+
+Delete 5 rows
+
+DELETE FROM SalesLT.BillingContactCopy
+WHERE LastName = 'Rivas';
+
+DELETE FROM SalesLT.BillingContactCopy
+WHERE LastName = 'Blue';
+
+DELETE FROM SalesLT.BillingContactCopy
+WHERE LastName = 'King';
+
+DELETE FROM SalesLT.BillingContactCopy
+WHERE LastName = 'Peterson';
+
+DELETE FROM SalesLT.BillingContactCopy
+WHERE LastName = 'Fox';
+
+
+MERGE Statement
+
+SET IDENTITY_INSERT SalesLT.BillingContact ON;
+
+MERGE SalesLT.BillingContact bc
+	USING SalesLT.BillingContactCopy bcc
+	ON (bc.BillingContactID = bcc.BillingContactID)
+WHEN MATCHED
+	THEN UPDATE SET
+		bc.FirstName = bcc.FirstName,
+		bc.LastName = bcc.LastName,
+		bc.PhoneNumber = bcc.PhoneNumber,
+		bc.Email = bcc.Email,
+		bc.PaymentMethod = bcc.PaymentMethod,
+		bc.CustomerID = bcc.CustomerID
+WHEN NOT MATCHED BY TARGET
+	THEN INSERT (BillingContactID, FirstName, LastName, PhoneNumber, Email, PaymentMethod, CustomerID)
+		 VALUES (bcc.BillingContactID, bcc.FirstName, bcc.LastName, bcc.PhoneNumber, bcc.Email, bcc.PaymentMethod, bcc.CustomerID)
+WHEN NOT MATCHED BY SOURCE
+	THEN DELETE;
