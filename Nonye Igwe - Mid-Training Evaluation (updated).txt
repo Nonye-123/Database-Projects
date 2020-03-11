@@ -1,0 +1,165 @@
+ bMid-Training Evaluation
+
+
+CREATE TABLE EmployeeDetails
+(
+	EmployeeID int PRIMARY KEY NOT NULL,
+	FullName nvarchar(50) NULL,
+	ManagerID int NULL,
+	DateOfJoining DATE NULL,
+);
+GO
+
+INSERT INTO EmployeeDetails
+VALUES
+(121, 'John Snow', 321, '01/31/2014'),
+(321, 'Walter White', 986, '01/30/2015'),
+(421, 'Kuldeep Rana', 876, '11/27/2016');
+
+CREATE TABLE EmployeeSalary
+(
+	EmployeeID int NOT NULL REFERENCES EmployeeDetails(EmployeeID),
+	Project nvarchar(50) NULL,
+	Salary money NULL,
+);
+GO
+
+INSERT INTO EmployeeSalary
+VALUES
+(121, 'P1', 8000),
+(321, 'P2', 1000),
+(421, 'P1', 12000);
+
+
+Question 1
+
+SELECT COUNT(*) AS NumberOfEmployees
+FROM EmployeeSalary
+WHERE Project = 'P1';
+
+Question 2
+
+SELECT ed.EmployeeID, ed.FullName, es.Salary
+FROM EmployeeDetails AS ed
+JOIN EmployeeSalary AS es
+ON ed.EmployeeID = es.EmployeeID
+WHERE es.Salary BETWEEN 5000 AND 10000;
+
+Question 3
+
+SELECT Project, COUNT(*) AS ProjectCount
+FROM EmployeeSalary
+GROUP BY Project
+ORDER BY ProjectCount Desc;
+
+Question 4
+
+SELECT SUBSTRING(FullName, 1, CHARINDEX(' ', FullName) - 1) AS FirstName
+FROM EmployeeDetails;
+
+Question 5
+
+SELECT ed.FullName AS EmpoyeeName, es.Salary
+FROM EmployeeDetails AS ed
+LEFT JOIN EmployeeSalary AS es
+ON ed.EmployeeID = es.EmployeeID
+
+Question 6
+
+SELECT m.FullName AS Manager
+FROM EmployeeDetails AS e
+INNER JOIN EmployeeDetails AS m
+ON m.EmployeeID = e.ManagerID;
+
+Question 7
+
+SELECT ed.* FROM EmployeeDetails AS ed
+INNER JOIN EmployeeSalary AS es
+ON ed.EmployeeID = es.EmployeeID
+
+Question 8
+
+SELECT column_name(s)
+FROM Table AS a
+INNER JOIN (SELECT column_name(s), COUNT(*)
+	    FROM Table 
+	    GROUP BY column_name(s)
+	    HAVING COUNT(*) > 1) AS b
+ON a.column_name = b.column_name
+ORDER BY a.column_name;
+
+Question 9
+
+DELETE FROM table_name
+WHERE column_name NOT IN
+	(SELECT MAX(column_name) AS Maxcolumn_name
+	FROM table_name
+	GROUP BY column_name(s));
+
+
+Question 10
+
+SELECT * FROM table_name 
+WHERE column_name %2 = 1;
+
+Question 11
+
+SELECT * FROM table_name 
+WHERE Column_Name %2 = 0;
+
+Question 12
+
+SELECT * INTO new_table
+FROM old_table
+
+
+Question 13
+
+SELECT * INTO new_table
+FROM old_table
+WHERE 1=0;
+
+Question 14
+
+SELECT column_name(s)
+FROM table1
+INNER JOIN table2
+ON table1.column_name = table2.column_name;
+
+Question 15
+
+SELECT column_name(s)
+FROM table1
+LEFT JOIN table2
+ON table1.column_name = table2.column_name
+WHERE table2.column_name IS NULL;
+
+Question 16
+
+SELECT GETDATE() 'Current date-time'
+
+
+Question 17
+
+SELECT * FROM EmployeeDetails
+WHERE DateofJoining LIKE '2016%';
+
+
+Question 18
+
+SELECT TOP (N) column_name(s)
+FROM table_name;
+
+
+Question 19
+
+SELECT DISTINCT Salary FROM EmployeeSalary
+ORDER BY Salary DESC
+OFFSET N-1 Rows FETCH NEXT 1 row ONLY;
+
+
+Question 20
+
+SELECT DISTINCT Salary FROM EmployeeSalary
+ORDER BY Salary DESC
+OFFSET 2 Rows FETCH NEXT 1 row ONLY;
