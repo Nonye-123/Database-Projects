@@ -1,0 +1,46 @@
+/*create customers table*/
+CREATE TABLE Customers
+(
+	CustomerID int PRIMARY KEY NOT NULL,
+	FirstName nvarchar(50) NOT NULL,
+	LastName nvarchar(50) NOT NULL,
+	PhoneNumber nvarchar(25) NULL
+);
+GO
+
+/*Insert 3 rows into the Customers table*/
+INSERT INTO Customers
+VALUES
+(1, 'John', 'Kennedy', '240-354-4000'),
+(2, 'Brandon', 'White', '301-288-1422'),
+(3, 'Luke', 'Brown', '202-334-6554');
+Classwork
+
+/*create duplicate customers table*/
+SELECT * INTO Customers_staging
+FROM Customers;
+
+/*Insert a row into the duplicate table*/
+INSERT INTO Customers_staging
+VALUES (4, 'Gloria', 'King', '240-334-5677');
+
+/*write a merge statement to transfer the new row to the inital customers table*/
+MERGE Customers c
+	USING Customers_staging cs
+	ON (c.CustomerID = cs.CustomerID)
+WHEN MATCHED
+	THEN UPDATE SET
+		c.FirstName = cs.FirstName,
+		c.LastName = cs.Lastname,
+		c.PhoneNumber = cs.PhoneNumber
+WHEN NOT MATCHED BY TARGET
+	THEN INSERT (CustomerID, FirstName, LastName, PhoneNumber)
+		VALUES (cs.CustomerID, cs.FirstName, cs.LastName, cs.PhoneNumber)
+WHEN NOT MATCHED BY SOURCE
+	THEN DELETE;
+
+/*confirm that new row updated into the initial customers table*/
+SELECT * FROM Customers;
+GO
+SELECT * FROM Customers_staging;
+GO
