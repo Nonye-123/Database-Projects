@@ -1,0 +1,93 @@
+ASSIGNMENT - Triggers
+
+/*Create Address table*/
+CREATE TABLE Address
+(
+	AddressID int PRIMARY KEY NOT NULL,
+	Address nvarchar(50) NOT NULL,
+	City nvarchar(25) NOT NULL,
+	State nvarchar(25) NOT NULL,
+	ZipCode nvarchar (15) NOT NULL,
+	Country nvarchar(25) NOT NULL
+);
+GO
+
+/*Insert 5 rows into the Address table*/
+INSERT INTO Address
+VALUES
+(1, '3346 14th Place NE', 'Washington', 'District of Columbia', 20015, 'United States'),
+(2, '5232 Park St.', 'Silver Spring', 'Maryland', 24456, 'United States'),
+(3, '4377 Luca Way', 'Arlington', 'Virginia', 22336, 'United States'),
+(4, '3426 Long Fellow Dr.', 'Alexandria', 'Virginia', 22342, 'United States'),
+(5, '2658 Spring Water Ave', 'Greenbelt', 'Maryland', 20054, 'United States');
+
+/*Create audit table to store data when trigger is executed*/
+CREATE TABLE AddressAudits
+(
+	ChangeID int IDENTITY PRIMARY KEY NOT NULL,
+	AddressID int NOT NULL,
+	Address nvarchar(50) NOT NULL,
+	City nvarchar(25) NOT NULL,
+	State nvarchar(25) NOT NULL,
+	ZipCode nvarchar (15) NOT NULL,
+	Country nvarchar(25) NOT NULL,
+	Operation char(3) NOT NULL,
+	TriggerTable char(3) NOT NULL,
+	AuditDateTime Datetime NOT NULL 
+);
+GO
+
+/*FOR INSERT Trigger on Address table*/
+CREATE TRIGGER AddressInsert
+ON Address
+FOR INSERT
+AS
+BEGIN
+INSERT INTO AddressAudits (AddressID, Address, City, State, Zipcode, Country, Operation, TriggerTable, AuditDateTime)
+SELECT AddressID, Address, City, State, Zipcode, Country, 'I', 'I', GETDATE()
+FROM INSERTED;
+END
+
+/*FOR DELETE Trigger on Address table*/
+CREATE TRIGGER AddressDeleted
+ON Address
+FOR DELETE
+AS
+BEGIN
+INSERT INTO AddressAudits (AddressID, Address, City, State, Zipcode, Country, Operation, TriggerTable, AuditDateTime)
+SELECT AddressID, Address, City, State, Zipcode, Country, 'D', 'D', GETDATE()
+FROM DELETED;
+END
+
+/*FOR UPDATE Trigger on Address table*/
+CREATE TRIGGER AddressUpdated
+ON Address
+FOR UPDATE
+AS
+BEGIN
+INSERT INTO AddressAudits (AddressID, Address, City, State, Zipcode, Country, Operation, TriggerTable, AuditDateTime)
+SELECT AddressID, Address, City, State, Zipcode, Country, 'U', 'D', GETDATE()
+FROM DELETED;
+
+INSERT INTO AddressAudits (AddressID, Address, City, State, Zipcode, Country, Operation, TriggerTable, AuditDateTime)
+SELECT AddressID, Address, City, State, Zipcode, Country, 'U', 'I', GETDATE()
+FROM INSERTED;
+END
+
+/*Test the Trigger*/
+/*Insert a new row into the Address table*/
+INSERT INTO Address
+VALUES
+(6, '4453 K St NW', 'Washington', 'District of Columbia', 20005, 'United States');
+
+/*Update the zipcode for AddressID 3*/
+UPDATE Address
+SET Zipcode = 22334
+WHERE AddressID = 3;
+
+/*Delete the entire row for AddressID 4*/
+DELETE FROM Address
+WHERE AddressID = 4;
+
+/*Check to see whether data was stored after executing insert, update and delete queries*/
+SELECT * FROM AddressAudits;
